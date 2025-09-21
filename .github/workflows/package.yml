@@ -1,0 +1,32 @@
+name: Package RetroArch (tg5040)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+
+  build:
+    runs-on: ubuntu-22.04-arm
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Package
+        run: task build package
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RetroArch
+          path: build/RetroArch
+          if-no-files-found: error
+          retention-days: 3
+          overwrite: true

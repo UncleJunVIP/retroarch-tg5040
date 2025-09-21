@@ -16,7 +16,6 @@ tasks:
       - task: extract-files
       - task: copy-configs
       - task: list-output
-#    silent: true
 
   docker-build:
     desc: Build the RetroArch Docker image
@@ -37,14 +36,11 @@ tasks:
       - docker cp {{.CONTAINER_ID}}:/home/builder/out/. {{.BUILD_DIR}}/
       - echo "Cleaning up container..."
       - docker rm {{.CONTAINER_ID}}
-    silent: true
 
   copy-configs:
     desc: Copy configuration files
     cmds:
       - cp retroarch.cfg {{.BUILD_DIR}}
-      - cp launch.sh {{.BUILD_DIR}}
-    silent: true
 
   list-output:
     desc: List the build output
