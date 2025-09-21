@@ -1,4 +1,4 @@
-FROM crosstool-ng-builder:latest AS toolchain-base
+FROM ghcr.io/loveretro/tg5040-toolchain:modernize AS toolchain-base
 
 USER root
 
