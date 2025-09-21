@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
     python3 \
     && rm -rf /var/lib/apt/lists/*
 
+RUN useradd -m builder
+
 USER builder
 WORKDIR /home/builder
 
