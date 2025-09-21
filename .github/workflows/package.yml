@@ -1,4 +1,4 @@
-name: Package RetroArch (tg5040)
+name: Build & Package RetroArch (tg5040)
 
 on:
   workflow_dispatch:
@@ -21,7 +21,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Package
-        run: task build package
+        run: task build
 
       - uses: actions/upload-artifact@v4
         with:
