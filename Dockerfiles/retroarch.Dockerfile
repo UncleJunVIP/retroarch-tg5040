@@ -9,9 +9,9 @@ WORKDIR /home/builder/RetroArch
 RUN ./configure \
         --enable-sdl2 \
         --enable-alsa \
+        --enable-opengles \
         --disable-pulse \
         --disable-opengl \
-        --disable-opengles \
         --disable-kms \
         --disable-x11 \
         --disable-wayland \
@@ -28,6 +28,12 @@ RUN ./configure \
 
 RUN mkdir -p /home/builder/out && \
     cp /home/builder/RetroArch/retroarch /home/builder/out/
+
+RUN mkdir -p /home/builder/out/assets/shaders && \
+    git clone --depth 1 https://github.com/libretro/glsl-shaders.git /tmp/glsl-shaders && \
+    cp -r /tmp/glsl-shaders/* /home/builder/out/assets/shaders/ && \
+    rm -rf /tmp/glsl-shaders && \
+    echo "Shaders downloaded successfully"
 
 WORKDIR /home/builder
 

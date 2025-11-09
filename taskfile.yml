@@ -1,9 +1,22 @@
 version: '3'
 
 vars:
-  CORES: snes9x,genesis_plus_gx,gambatte,fceumm,nestopia,pcsx_rearmed,mgba,beetle_psx_hw
+  CORES: snes9x,genesis_plus_gx,gambatte,fceumm,nestopia,pcsx_rearmed,mgba
 
 tasks:
+  clean:
+    desc: Clean build artifacts and Docker images
+    cmds:
+      - rm -rf build/
+      - docker rmi retroarch-base:latest 2>/dev/null || true
+      - docker rmi retroarch-tg5040:latest 2>/dev/null || true
+      - |
+        for core in $(echo "{{.CORES}}" | tr ',' ' '); do
+          docker rmi retroarch-core-$core:latest 2>/dev/null || true
+        done
+      - docker system prune -f
+      - echo "✅ Cleaned all build artifacts and Docker images"
+
   build-base:
     desc: Build the base image with SDL2 preinstalled
     cmds:
@@ -15,9 +28,10 @@ tasks:
     deps: [ build-base ]
     cmds:
       - docker build -f Dockerfiles/retroarch.Dockerfile -t retroarch-tg5040:latest .
-      - mkdir -p build/RetroArch
+      - mkdir -p build/RetroArch/lib
       - docker create --name retroarch-temp retroarch-tg5040:latest
       - docker cp retroarch-temp:/home/builder/out/retroarch build/RetroArch/ 2>/dev/null || true
+      - docker cp retroarch-temp:/home/builder/out/lib/libxkbcommon.so.0 build/RetroArch/lib/ 2>/dev/null || true
       - docker rm retroarch-temp
       - echo "✅ RetroArch built successfully"
 
@@ -29,9 +43,8 @@ tasks:
     cmds:
       - docker build -f Dockerfiles/cores/{{.CORE}}.Dockerfile -t retroarch-core-{{.CORE}}:latest .
       - docker create --name core-temp-{{.CORE}} retroarch-core-{{.CORE}}:latest
-      - mkdir -p build/RetroArch/cores build/RetroArch/cores/info
-      - docker cp core-temp-{{.CORE}}:/home/builder/out/ build/RetroArch/cores/ 2>/dev/null || true
-      - docker cp core-temp-{{.CORE}}:/home/builder/out/info/. build/RetroArch/cores/info/ 2>/dev/null || true
+      - mkdir -p build/RetroArch/cores/info build/RetroArch/lib
+      - docker cp core-temp-{{.CORE}}:/home/builder/out/. build/RetroArch/cores/ 2>/dev/null || true
       - docker rm core-temp-{{.CORE}}
       - echo "✅ Built {{.CORE}} core successfully"
 
@@ -47,6 +60,7 @@ tasks:
         done
         echo "✅ All cores built successfully!"
 
+
   build-cores-parallel:
     desc: Build all cores in parallel (faster but uses more resources)
     deps: [ build-base ]
@@ -56,63 +70,18 @@ tasks:
         echo "{{.CORES}}" | tr ',' '\n' | xargs -I {} -P 4 sh -c 'echo "Building {}" && task build-core CORE={} || true'
         echo "✅ All cores built in parallel!"
 
-  build-nintendo-cores:
-    desc: Build all Nintendo system cores
-    deps: [ build-base ]
+  package:
+    desc: Package RetroArch for NextUI (and similar variants)
+    deps: [ build-base, build-retroarch, build-all-cores ]
     cmds:
-      - task: build-core
-        vars: { CORE: snes9x }
-      - task: build-core
-        vars: { CORE: fceumm }
-      - task: build-core
-        vars: { CORE: nestopia }
-      - task: build-core
-        vars: { CORE: gambatte }
-      - task: build-core
-        vars: { CORE: mgba }
+      - rm -rf build/RetroArch.pak
+      - mkdir -p build/RetroArch.pak
+      - rm -rf build/RetroArch/cores/lib/ || true
+      - cp -R build/RetroArch/ build/RetroArch.pak/
+      - mv build/RetroArch.pak/cores/info build/RetroArch.pak/cores/.info
+      - cp scripts/launch.sh build/RetroArch.pak/
+      - cp configs/retroarch-base.cfg build/RetroArch.pak/retroarch.cfg
 
-  build-sega-cores:
-    desc: Build all Sega system cores
-    deps: [ build-base ]
+  adb:
     cmds:
-      - task: build-core
-        vars: { CORE: genesis_plus_gx }
-
-  build-sony-cores:
-    desc: Build all Sony PlayStation cores
-    deps: [ build-base ]
-    cmds:
-      - task: build-core
-        vars: { CORE: pcsx_rearmed }
-      - task: build-core
-        vars: { CORE: beetle_psx_hw }
-
-  build-complete:
-    desc: Build complete RetroArch package with all cores
-    cmds:
-      - task: build-retroarch
-      - task: build-all-cores
-      - echo "=== Build Summary ==="
-      - ls -lh build/RetroArch/retroarch
-      - echo "=== Available Cores ==="
-      - ls -lh build/RetroArch/cores/ | grep ".so" || echo "No cores built"
-      - echo "✅ Complete RetroArch build finished!"
-
-  clean:
-    desc: Clean build artifacts and Docker images
-    cmds:
-      - rm -rf build/
-      - docker rmi retroarch-base:latest 2>/dev/null || true
-      - docker rmi retroarch-tg5040:latest 2>/dev/null || true
-      - |
-        for core in $(echo "{{.CORES}}" | tr ',' ' '); do
-          docker rmi retroarch-core-$core:latest 2>/dev/null || true
-        done
-      - docker system prune -f
-      - echo "✅ Cleaned all build artifacts and Docker images"
-
-  list-cores:
-    desc: List all available cores to build
-    cmds:
-      - echo "Available cores to build:"
-      - echo "{{.CORES}}" | tr ',' '\n' | sed 's/^/  - /'
+      - adb push build/RetroArch.pak /mnt/SDCARD/Tools/tg5040

@@ -1,3 +1,4 @@
+
 FROM ghcr.io/loveretro/tg5040-toolchain:modernize
 
 USER root
@@ -34,4 +35,10 @@ RUN wget -q https://github.com/libsdl-org/SDL/releases/download/release-2.30.9/S
 
 RUN useradd -m builder
 
+USER builder
 WORKDIR /home/builder
+
+RUN mkdir -p /home/builder/out/lib && \
+    cp /usr/lib/*/libxkbcommon.so* /home/builder/out/lib/ 2>/dev/null || true && \
+    cp /usr/lib/*/libSDL2*.so* /home/builder/out/lib/ 2>/dev/null || true && \
+    echo "Libraries copied to out/lib"

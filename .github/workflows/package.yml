@@ -21,12 +21,12 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Package
-        run: task build
+        run: task package
 
       - uses: actions/upload-artifact@v4
         with:
-          name: RetroArch
-          path: build/RetroArch
+          name: RetroArch.pak
+          path: build/RetroArch.pak
           if-no-files-found: error
           retention-days: 3
           overwrite: true
