@@ -8,10 +8,6 @@ permissions:
   actions: read
   packages: write
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository | lower }}
-
 jobs:
   build-base:
     name: Build Base Image
@@ -25,7 +21,7 @@ jobs:
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -35,9 +31,9 @@ jobs:
           context: .
           file: ./Dockerfiles/base.Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/retroarch-base:latest
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/retroarch-base:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/retroarch-base:buildcache,mode=max
+          tags: ghcr.io/unclejunvip/retroarch-tg5040/retroarch-base:latest
+          cache-from: type=registry,ref=ghcr.io/unclejunvip/retroarch-tg5040/retroarch-base:buildcache
+          cache-to: type=registry,ref=ghcr.io/unclejunvip/retroarch-tg5040/retroarch-base:buildcache,mode=max
 
   build-retroarch:
     name: Build RetroArch
@@ -73,7 +69,7 @@ jobs:
     runs-on: ubuntu-22.04-arm
     strategy:
       matrix:
-        core: [snes9x, genesis_plus_gx, gambatte, fceumm, nestopia, pcsx_rearmed, mgba, gpsp]
+        core: [ snes9x, genesis_plus_gx, gambatte, fceumm, nestopia, pcsx_rearmed, mgba, gpsp ]
       max-parallel: 4
     steps:
       - uses: actions/checkout@v4
@@ -102,7 +98,7 @@ jobs:
 
   package:
     name: Package Release
-    needs: [build-retroarch, build-cores]
+    needs: [ build-retroarch, build-cores ]
     runs-on: ubuntu-22.04-arm
     steps:
       - uses: actions/checkout@v4
