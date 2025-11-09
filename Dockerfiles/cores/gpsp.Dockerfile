@@ -1,5 +1,6 @@
+ARG BASE_IMAGE=retroarch-base:latest
 
-FROM retroarch-base:latest
+FROM ${BASE_IMAGE}
 
 USER builder
 WORKDIR /home/builder
