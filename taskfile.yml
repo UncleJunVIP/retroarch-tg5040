@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  CORES: snes9x,genesis_plus_gx,gambatte,fceumm,nestopia,pcsx_rearmed,mgba
+  CORES: snes9x,genesis_plus_gx,gambatte,fceumm,nestopia,pcsx_rearmed,mgba,gpsp
 
 tasks:
   clean:
@@ -15,13 +15,11 @@ tasks:
           docker rmi retroarch-core-$core:latest 2>/dev/null || true
         done
       - docker system prune -f
-      - echo "✅ Cleaned all build artifacts and Docker images"
 
   build-base:
     desc: Build the base image with SDL2 preinstalled
     cmds:
       - docker build -f Dockerfiles/base.Dockerfile -t retroarch-base:latest .
-      - echo "✅ Base image built successfully"
 
   build-retroarch:
     desc: Build RetroArch executable
@@ -33,7 +31,6 @@ tasks:
       - docker cp retroarch-temp:/home/builder/out/retroarch build/RetroArch/ 2>/dev/null || true
       - docker cp retroarch-temp:/home/builder/out/lib/libxkbcommon.so.0 build/RetroArch/lib/ 2>/dev/null || true
       - docker rm retroarch-temp
-      - echo "✅ RetroArch built successfully"
 
   build-core:
     desc: Build a specific core (use CORE=corename)
@@ -46,7 +43,6 @@ tasks:
       - mkdir -p build/RetroArch/cores/info build/RetroArch/lib
       - docker cp core-temp-{{.CORE}}:/home/builder/out/. build/RetroArch/cores/ 2>/dev/null || true
       - docker rm core-temp-{{.CORE}}
-      - echo "✅ Built {{.CORE}} core successfully"
 
   build-all-cores:
     desc: Build all emulator cores sequentially
@@ -58,7 +54,6 @@ tasks:
           echo "=== Building core: $core ==="
           task build-core CORE=$core || true
         done
-        echo "✅ All cores built successfully!"
 
 
   build-cores-parallel:
@@ -68,18 +63,18 @@ tasks:
       - |
         echo "Building cores in parallel: {{.CORES}}"
         echo "{{.CORES}}" | tr ',' '\n' | xargs -I {} -P 4 sh -c 'echo "Building {}" && task build-core CORE={} || true'
-        echo "✅ All cores built in parallel!"
 
   package:
     desc: Package RetroArch for NextUI (and similar variants)
-    deps: [ build-base, build-retroarch, build-all-cores ]
     cmds:
       - rm -rf build/RetroArch.pak
       - mkdir -p build/RetroArch.pak
       - rm -rf build/RetroArch/cores/lib/ || true
       - cp -R build/RetroArch/ build/RetroArch.pak/
-      - mv build/RetroArch.pak/cores/info build/RetroArch.pak/cores/.info
-      - cp scripts/launch.sh build/RetroArch.pak/
+      - mkdir -p build/RetroArch.pak/cores/.info
+      - mv build/RetroArch.pak/cores/info/* build/RetroArch.pak/cores/.info/ 2>/dev/null || true
+      - rmdir build/RetroArch.pak/cores/info 2>/dev/null || true
+      - cp scripts/launch.sh pak.json build/RetroArch.pak/
       - cp configs/retroarch-base.cfg build/RetroArch.pak/retroarch.cfg
 
   adb:
