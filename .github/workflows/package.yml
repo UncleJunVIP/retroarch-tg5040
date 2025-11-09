@@ -6,6 +6,7 @@ on:
 permissions:
   contents: read
   actions: read
+  packages: write
 
 jobs:
   build-base:
@@ -14,14 +15,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.x
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build Base Image
-        run: task build-base
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Base Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfiles/base.Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/retroarch-base:latest
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/retroarch-base:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/retroarch-base:buildcache,mode=max
 
   build-retroarch:
     name: Build RetroArch
@@ -30,34 +42,59 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.x
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build RetroArch
-        run: task build-retroarch
+        run: |
+          docker build -f Dockerfiles/retroarch.Dockerfile \
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            -t retroarch-tg5040:latest .
+          mkdir -p build/RetroArch/lib
+          docker create --name retroarch-temp retroarch-tg5040:latest
+          docker cp retroarch-temp:/home/builder/out/retroarch build/RetroArch/ 2>/dev/null || true
+          docker cp retroarch-temp:/home/builder/out/lib/libxkbcommon.so.0 build/RetroArch/lib/ 2>/dev/null || true
+          docker rm retroarch-temp
+
+      - name: Upload RetroArch Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: retroarch-build
+          path: build/RetroArch/
+          retention-days: 1
 
   build-cores:
-    name: Build Cores
+    name: Build ${{ matrix.core }}
     needs: build-base
     runs-on: ubuntu-22.04-arm
     strategy:
       matrix:
         core: [snes9x, genesis_plus_gx, gambatte, fceumm, nestopia, pcsx_rearmed, mgba, gpsp]
-      max-parallel: 2
+      max-parallel: 4
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Task
-        uses: arduino/setup-task@v2
+      - name: Download RetroArch Build
+        uses: actions/download-artifact@v4
         with:
-          version: 3.x
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          name: retroarch-build
+          path: build/RetroArch/
 
       - name: Build ${{ matrix.core }}
-        run: task build-core CORE=${{ matrix.core }}
+        run: |
+          mkdir -p build/RetroArch/cores/info
+          docker build -f Dockerfiles/cores/${{ matrix.core }}.Dockerfile \
+            -t retroarch-core-${{ matrix.core }}:latest .
+          docker create --name core-temp-${{ matrix.core }} retroarch-core-${{ matrix.core }}:latest
+          docker cp core-temp-${{ matrix.core }}:/home/builder/out/. build/RetroArch/cores/ 2>/dev/null || true
+          docker rm core-temp-${{ matrix.core }}
+
+      - name: Upload Cores
+        uses: actions/upload-artifact@v4
+        with:
+          name: retroarch-build
+          path: build/RetroArch/cores/
+          retention-days: 1
 
   package:
     name: Package Release
@@ -65,6 +102,12 @@ jobs:
     runs-on: ubuntu-22.04-arm
     steps:
       - uses: actions/checkout@v4
+
+      - name: Download RetroArch Build
+        uses: actions/download-artifact@v4
+        with:
+          name: retroarch-build
+          path: build/RetroArch/
 
       - name: Install Task
         uses: arduino/setup-task@v2
@@ -75,21 +118,17 @@ jobs:
       - name: Create Package
         run: task package
 
-      - name: Upload Artifact
+      - name: Upload Final Package
         uses: actions/upload-artifact@v4
         with:
           name: RetroArch.pak
-          path: build/RetroArch.pak
-          if-no-files-found: error
+          path: build/RetroArch.pak/
           retention-days: 3
-          overwrite: true
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
           files: build/RetroArch.pak/**/*
-          draft: false
-          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
