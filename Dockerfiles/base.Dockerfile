@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libexpat1-dev \
     zlib1g-dev \
+    libpng-dev \
+    libjpeg-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN wget -q https://github.com/libsdl-org/SDL/releases/download/release-2.30.9/SDL2-2.30.9.tar.gz && \
@@ -32,35 +34,4 @@ RUN wget -q https://github.com/libsdl-org/SDL/releases/download/release-2.30.9/S
 
 RUN useradd -m builder
 
-USER builder
 WORKDIR /home/builder
-
-RUN git clone https://github.com/libretro/RetroArch.git
-WORKDIR /home/builder/RetroArch
-
-RUN ./configure \
-        --enable-sdl2 \
-        --enable-alsa \
-        --disable-pulse \
-        --disable-opengl \
-        --disable-opengles \
-        --disable-kms \
-        --disable-x11 \
-        --disable-wayland \
-        --disable-vulkan \
-        --disable-xvideo \
-        --disable-xinerama \
-        --disable-xshm \
-        --disable-xrandr \
-        --disable-ffmpeg && \
-    make -j$(nproc) && \
-    echo "=== Build Complete ===" && \
-    ls -lh ./retroarch && \
-    file ./retroarch
-
-RUN mkdir -p /home/builder/out && \
-    cp /home/builder/RetroArch/retroarch /home/builder/out/
-
-WORKDIR /home/builder
-
-ENTRYPOINT ["bash"]
