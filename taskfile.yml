@@ -70,7 +70,7 @@ tasks:
       - rm -rf build/RetroArch.pak
       - mkdir -p build/RetroArch.pak
       - rm -rf build/RetroArch/cores/lib/ || true
-      - cp -R build/RetroArch/ build/RetroArch.pak/
+      - cp -R build/RetroArch/* build/RetroArch.pak/
       - mkdir -p build/RetroArch.pak/cores/.info
       - mv build/RetroArch.pak/cores/info/* build/RetroArch.pak/cores/.info/ 2>/dev/null || true
       - rmdir build/RetroArch.pak/cores/info 2>/dev/null || true
