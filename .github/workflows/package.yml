@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-22.04-arm
     strategy:
       matrix:
-        core: [ snes9x, genesis_plus_gx, gambatte, fceumm, nestopia, pcsx_rearmed, mgba, gpsp ]
+        core: [ snes9x, genesis_plus_gx, gambatte, fceumm, nestopia, pcsx_rearmed ,mgba ,gpsp, stella2014, atari800, prosystem, dosbox, fbneo ]
       max-parallel: 4
     steps:
       - uses: actions/checkout@v4
