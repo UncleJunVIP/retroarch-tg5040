@@ -127,30 +127,21 @@ jobs:
           path: build/RetroArch/cores/
           merge-multiple: true
 
+      - name: Debug Directory Structure
+        run: |
+          echo "=== build/RetroArch structure ==="
+          find build/RetroArch -type f | head -20
+          echo "=== build/RetroArch/cores structure ==="
+          find build/RetroArch/cores -type f 2>/dev/null | head -20
+
       - name: Install Task
         uses: arduino/setup-task@v2
         with:
           version: 3.x
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Package Directory
-        run: |
-          rm -rf build/RetroArch.pak
-          mkdir -p build/RetroArch.pak
-
-      - name: Copy RetroArch Contents
-        run: cp -R build/RetroArch/* build/RetroArch.pak/
-
-      - name: Organize Cores Info
-        run: |
-          mkdir -p build/RetroArch.pak/cores/.info
-          mv build/RetroArch.pak/cores/info/* build/RetroArch.pak/cores/.info/ 2>/dev/null || true
-          rmdir build/RetroArch.pak/cores/info 2>/dev/null || true
-
-      - name: Add Config Files
-        run: |
-          cp scripts/launch.sh pak.json build/RetroArch.pak/
-          cp configs/retroarch-base.cfg build/RetroArch.pak/retroarch.cfg
+      - name: Create Package
+        run: task package
 
       - name: Upload Final Package
         uses: actions/upload-artifact@v4
