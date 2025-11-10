@@ -127,6 +127,11 @@ jobs:
           path: build/RetroArch/cores/
           merge-multiple: true
 
+      - name: Organize Core Files
+        run: |
+          mkdir -p build/RetroArch/cores/info
+          find build/RetroArch/cores -maxdepth 1 -name "*.info" -exec mv {} build/RetroArch/cores/info/ \;
+
       - name: Debug Directory Structure
         run: |
           echo "=== build/RetroArch structure ==="
