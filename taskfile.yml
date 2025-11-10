@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  CORES: snes9x,genesis_plus_gx,gambatte,fceumm,nestopia,pcsx_rearmed,mgba,gpsp
+  CORES: snes9x,genesis_plus_gx,gambatte,fceumm,nestopia,pcsx_rearmed,mgba,gpsp,stella2014,atari800,prosystem,dosbox,fbneo
 
 tasks:
   clean:
