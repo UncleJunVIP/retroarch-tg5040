@@ -61,11 +61,13 @@ jobs:
           docker cp retroarch-temp:/home/builder/out/lib/libxkbcommon.so.0 build/RetroArch/lib/ 2>/dev/null || true
           docker rm retroarch-temp
 
-      - name: Upload RetroArch Artifact
+      - name: Upload RetroArch Binary
         uses: actions/upload-artifact@v4
         with:
-          name: retroarch-build
-          path: build/RetroArch/
+          name: retroarch-binary
+          path: |
+            build/RetroArch/retroarch
+            build/RetroArch/lib/
           retention-days: 1
 
   build-cores:
@@ -86,12 +88,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Download RetroArch Build
-        uses: actions/download-artifact@v4
-        with:
-          name: retroarch-build
-          path: build/RetroArch/
-
       - name: Build ${{ matrix.core }}
         run: |
           mkdir -p build/RetroArch/cores/info
@@ -102,11 +98,13 @@ jobs:
           docker cp core-temp-${{ matrix.core }}:/home/builder/out/. build/RetroArch/cores/ 2>/dev/null || true
           docker rm core-temp-${{ matrix.core }}
 
-      - name: Upload Cores
+      - name: Upload Core ${{ matrix.core }}
         uses: actions/upload-artifact@v4
         with:
-          name: retroarch-build
-          path: build/RetroArch/cores/
+          name: retroarch-core-${{ matrix.core }}
+          path: |
+            build/RetroArch/cores/${{ matrix.core }}_libretro.so
+            build/RetroArch/cores/info/${{ matrix.core }}_libretro.info
           retention-days: 1
 
   package:
@@ -116,11 +114,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download RetroArch Build
+      - name: Download RetroArch Binary
         uses: actions/download-artifact@v4
         with:
-          name: retroarch-build
+          name: retroarch-binary
           path: build/RetroArch/
+
+      - name: Download Cores
+        uses: actions/download-artifact@v4
+        with:
+          pattern: retroarch-core-*
+          path: build/RetroArch/
+          merge-multiple: true
 
       - name: Install Task
         uses: arduino/setup-task@v2
