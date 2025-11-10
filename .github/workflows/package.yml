@@ -129,8 +129,9 @@ jobs:
 
       - name: Organize Core Files
         run: |
-          mkdir -p build/RetroArch/cores/info
-          find build/RetroArch/cores -maxdepth 1 -name "*.info" -exec mv {} build/RetroArch/cores/info/ \;
+          mkdir -p build/RetroArch/assets/cores/info
+          find build/RetroArch/cores -name "*.info" -exec mv {} build/RetroArch/assets/cores/info/ \;
+          rm -rf build/RetroArch/cores/info 2>/dev/null || true
 
       - name: Debug Directory Structure
         run: |

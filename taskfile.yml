@@ -71,7 +71,9 @@ tasks:
       - mkdir -p build/RetroArch.pak
       - rm -rf build/RetroArch/cores/lib/ || true
       - cp -R build/RetroArch/* build/RetroArch.pak/
-      - mv build/RetroArch.pak/cores/info build/RetroArch.pak/cores/.info 2>/dev/null || true
+      - mkdir -p build/RetroArch.pak/assets/cores/info
+      - find build/RetroArch.pak/cores -name "*.info" -exec mv {} build/RetroArch.pak/assets/cores/info/ \;
+      - rm -rf build/RetroArch.pak/cores/info 2>/dev/null || true
       - cp scripts/launch.sh pak.json build/RetroArch.pak/
       - cp configs/retroarch-base.cfg build/RetroArch.pak/retroarch.cfg
 
