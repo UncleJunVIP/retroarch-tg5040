@@ -14,8 +14,7 @@ A clean, reproducible build of RetroArch for the TrimUI Brick and Smart Pro.
 
 ### Cleaning
 
-- `task clean` - Remove all build artifacts and Docker images. Use this if something goes wrong and you want to start
-  fresh.
+- `task clean` - Remove all build artifacts and Docker images.
 
 ### Building
 
@@ -44,30 +43,59 @@ A clean, reproducible build of RetroArch for the TrimUI Brick and Smart Pro.
 
 The system currently builds support for the following platforms. Each is a separate libretro core:
 
+### Commodore
+
+- **Commodore 64** (vice_x64)
+- **Commodore 128** (vice_x128)
+- **Commodore PET** (vice_xpet)
+- **Commodore Plus/4** (vice_xplus4)
+- **Commodore VIC-20** (vice_xvic)
+
 ### Nintendo
 
 - **NES** (fceumm, nestopia)
 - **SNES** (snes9x)
+- **Super Famicom** (mednafen_supafaust)
 - **Game Boy / Game Boy Color** (gambatte)
 - **Game Boy Advance** (mgba, gpsp)
+- **Pokémon Mini** (pokemini)
 
 ### Sega
 
 - **Genesis / Mega Drive / Game Gear** (genesis_plus_gx)
+- **Master System** (bluemsx)
 
 ### Atari
 
-- **Atari 2600** (stella)
-- **Atari 5200** (atari800)
+- **Atari 2600** (stella2014)
+- **Atari 5200** (a5200)
 - **Atari 7800** (prosystem)
+- **Atari Lynx** (handy)
+
+### Amstrad
+
+- **Amstrad CPC** (cap32)
+
+### Coleco
+
+- **ColecoVision** (gearcoleco)
 
 ### Sony
 
 - **PlayStation 1** (pcsx_rearmed)
 
-### Arcade
+### NEC
+
+- **PC Engine / TurboGrafx-16** (mednafen_pce_fast)
+- **Virtual Boy** (mednafen_vb)
+
+### Arcade & Other
 
 - **FB Neo** (fbneo)
+- **MAME** (race)
+- **Doom** (prboom)
+- **Amiga** (puae2021)
+- **PICO-8** (fake08)
 
 ### Other
 
@@ -77,11 +105,4 @@ The system currently builds support for the following platforms. Each is a separ
 
 The cores to build are defined in the `CORES` variable at the top of taskfile.yml:
 
-`CORES: snes9x,genesis_plus_gx,gambatte,fceumm,nestopia,pcsx_rearmed,mgba,gpsp,stella,atari800,prosystem,dosbox,fbneo`
-
-## Notes
-
-- Each core is built in its own Docker container
-- The `.pak` format is specific to NextUI and compatible frontends (Should work with MinUI and PakUI but I haven't personally tested it)
-- Builds are isolated and won't affect your system or other projects
-- You can safely run `task clean` - it won't delete your source code
+`CORES: a5200,bluemsx,cap32,dosbox,fake08,fbneo,fceumm,gambatte,gearcoleco,genesis_plus_gx,gpsp,handy,mednafen_pce_fast,mednafen_supafaust,mednafen_vb,mgba,nestopia,pcsx_rearmed,pokemini,prboom,prosystem,puae2021,race,snes9x,stella2014,vice_x64,vice_x128,vice_xpet,vice_xplus4,vice_xvic`

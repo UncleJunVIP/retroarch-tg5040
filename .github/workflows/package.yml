@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-22.04-arm
     strategy:
       matrix:
-        core: [ snes9x, genesis_plus_gx, gambatte, fceumm, nestopia, pcsx_rearmed ,mgba ,gpsp, stella2014, atari800, prosystem, dosbox, fbneo ]
+        core: [ a5200, bluemsx, cap32, dosbox, fbneo, fceumm, gambatte, gearcoleco, genesis_plus_gx, gpsp, handy, mednafen_pce_fast, mednafen_supafaust, mednafen_vb, mgba, nestopia, pcsx_rearmed, pokemini, prboom, prosystem, puae2021, race, snes9x, stella2014, vice_x64, vice_x128, vice_xpet, vice_xplus4, vice_xvic ]
       max-parallel: 4
     steps:
       - uses: actions/checkout@v4
@@ -149,12 +149,25 @@ jobs:
       - name: Create Package
         run: task package
 
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: build/RetroArch.pak
+          format: cyclonedx-json
+          output-file: build/RetroArch.pak/sbom.cyclonedx.json
+
       - name: Upload Final Package
         uses: actions/upload-artifact@v4
         with:
           name: RetroArch.pak
           path: build/RetroArch.pak/
           retention-days: 3
+
+      - name: Attest Build Provenance
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: build/RetroArch.pak/
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')

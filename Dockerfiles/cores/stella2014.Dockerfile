@@ -12,7 +12,7 @@ RUN git clone --depth 1 https://github.com/libretro/stella-libretro.git stella &
     cp stella2014_libretro.so /home/builder/out/
 
 RUN mkdir -p /home/builder/out/info && \
-    wget -q -O /home/builder/out/info/stella_libretro.info \
+    wget -q -O /home/builder/out/info/stella2014_libretro.info \
     "https://raw.githubusercontent.com/libretro/libretro-super/master/dist/info/stella_libretro.info" || \
     echo "Warning: Could not download info file"
 

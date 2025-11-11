@@ -1,8 +1,7 @@
 version: '3'
 
 vars:
-  CORES: snes9x,genesis_plus_gx,gambatte,fceumm,nestopia,pcsx_rearmed,mgba,gpsp,stella2014,atari800,prosystem,dosbox,fbneo
-
+  CORES: a5200,bluemsx,cap32,dosbox,fbneo,fceumm,gambatte,gearcoleco,genesis_plus_gx,gpsp,handy,mednafen_pce_fast,mednafen_supafaust,mednafen_vb,mgba,nestopia,pcsx_rearmed,pokemini,prboom,prosystem,puae2021,race,snes9x,stella2014,vice_x64,vice_x128,vice_xpet,vice_xplus4,vice_xvic
 tasks:
   clean:
     desc: Clean build artifacts and Docker images
