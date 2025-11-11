@@ -1,10 +1,10 @@
 <div align="center">
 
-<h3 style="font-size: 40px;">
+<h1>
     RetroArch TG5040
-</h3>
+</h1>
 
-<h4 style="font-size: 18px;">
+<h4>
 
 A clean, reproducible build of RetroArch for the TrimUI Brick and Smart Pro.
 </h4>
