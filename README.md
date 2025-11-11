@@ -1,7 +1,23 @@
-# RetroArch TG5040
+<div align="center">
+
+<h3 style="font-size: 25px;">
+    RetroArch TG5040
+</h3>
+
+<h4 style="font-size: 18px;">
 
 A clean, reproducible build of RetroArch for the TrimUI Brick and Smart Pro.
+</h4>
 
+## [Download this in Pak Store!](https://github.com/UncleJunVIP/nextui-pak-store)
+
+![GitHub License](https://img.shields.io/github/license/UncleJunVip/retroarch-tg5040?style=for-the-badge&color=007C77)
+![GitHub Release](https://img.shields.io/github/v/release/UncleJunVIP/retroarch-tg5040?sort=semver&style=for-the-badge&color=007C77)
+![GitHub Repo stars](https://img.shields.io/github/stars/UncleJunVip/retroarch-tg5040?style=for-the-badge&color=007C77)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/UncleJunVIP/retroarch-tg5040/total?style=for-the-badge&label=Total%20Downloads&color=007C77)
+
+
+</div>
 
 ## Supported Emulators
 
