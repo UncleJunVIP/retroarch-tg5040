@@ -1,6 +1,6 @@
 <div align="center">
 
-<h3 style="font-size: 25px;">
+<h3 style="font-size: 40px;">
     RetroArch TG5040
 </h3>
 
