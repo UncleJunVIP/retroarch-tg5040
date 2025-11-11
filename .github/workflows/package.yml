@@ -164,12 +164,6 @@ jobs:
           path: build/RetroArch.pak/
           retention-days: 3
 
-      - name: Attest Build Provenance
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-path: build/RetroArch.pak/
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
