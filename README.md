@@ -2,31 +2,22 @@
 
 A clean, reproducible build of RetroArch for the TrimUI Brick and Smart Pro.
 
+
 ## Supported Emulators
 
 The system currently builds support for the following platforms. Each is a separate libretro core:
 
-### Commodore
+### Amstrad
 
-- **Commodore 64** (vice_x64)
-- **Commodore 128** (vice_x128)
-- **Commodore PET** (vice_xpet)
-- **Commodore Plus/4** (vice_xplus4)
-- **Commodore VIC-20** (vice_xvic)
+- **Amstrad CPC** (cap32)
 
-### Nintendo
+### Arcade & Other
 
-- **NES** (fceumm, nestopia)
-- **SNES** (snes9x)
-- **Super Famicom** (mednafen_supafaust)
-- **Game Boy / Game Boy Color** (gambatte)
-- **Game Boy Advance** (mgba, gpsp)
-- **Pokémon Mini** (pokemini)
-
-### Sega
-
-- **Genesis / Mega Drive / Game Gear** (genesis_plus_gx)
-- **Master System** (bluemsx)
+- **Amiga** (puae2021)
+- **Doom** (prboom)
+- **FB Neo** (fbneo)
+- **MAME** (race)
+- **PICO-8** (fake08)
 
 ### Atari
 
@@ -35,36 +26,44 @@ The system currently builds support for the following platforms. Each is a separ
 - **Atari 7800** (prosystem)
 - **Atari Lynx** (handy)
 
-### Amstrad
-
-- **Amstrad CPC** (cap32)
-
 ### Coleco
 
 - **ColecoVision** (gearcoleco)
 
-### Sony
+### Commodore
 
-- **PlayStation 1** (pcsx_rearmed)
+- **Commodore 128** (vice_x128)
+- **Commodore 64** (vice_x64)
+- **Commodore PET** (vice_xpet)
+- **Commodore Plus/4** (vice_xplus4)
+- **Commodore VIC-20** (vice_xvic)
 
 ### NEC
 
 - **PC Engine / TurboGrafx-16** (mednafen_pce_fast)
 - **Virtual Boy** (mednafen_vb)
 
-### Arcade & Other
+### Nintendo
 
-- **FB Neo** (fbneo)
-- **MAME** (race)
-- **Doom** (prboom)
-- **Amiga** (puae2021)
-- **PICO-8** (fake08)
+- **Game Boy / Game Boy Color** (gambatte)
+- **Game Boy Advance** (gpsp, mgba)
+- **NES** (fceumm, nestopia)
+- **Pokémon Mini** (pokemini)
+- **SNES** (snes9x)
+- **Super Famicom** (mednafen_supafaust)
 
 ### Other
 
 - **DOSBox** (dosbox)
 
----
+### Sega
+
+- **Genesis / Mega Drive / Game Gear** (genesis_plus_gx)
+- **Master System** (bluemsx)
+
+### Sony
+
+- **PlayStation 1** (pcsx_rearmed)
 
 ## Building Requirements
 
