@@ -77,7 +77,7 @@ jobs:
     runs-on: ubuntu-22.04-arm
     strategy:
       matrix:
-        core: [ a5200, bluemsx, cap32, dosbox, fbneo, fceumm, gambatte, gearcoleco, genesis_plus_gx, gpsp, handy, mednafen_pce_fast, mednafen_supafaust, mednafen_vb, mgba, nestopia, pcsx_rearmed, pokemini, prboom, prosystem, puae2021, race, snes9x, stella2014, vice_x64, vice_x128, vice_xpet, vice_xplus4, vice_xvic ]
+        core: [ a5200, bluemsx, cap32, dosbox, fbneo, fceumm, gambatte, gearcoleco, genesis_plus_gx, gpsp, handy, mednafen_pce_fast, mednafen_supafaust, mednafen_supergrafx, mednafen_vb, mgba, nestopia, pcsx_rearmed, pokemini, prboom, prosystem, puae2021, race, snes9x, stella2014, vice_x64, vice_x128, vice_xpet, vice_xplus4, vice_xvic ]
       max-parallel: 4
     steps:
       - uses: actions/checkout@v4
