@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  CORES: a5200,bluemsx,cap32,dosbox,fbneo,fceumm,gambatte,gearcoleco,genesis_plus_gx,gpsp,handy,mednafen_pce_fast,mednafen_supafaust,mednafen_supergrafx,mednafen_vb,mgba,nestopia,pcsx_rearmed,pokemini,prboom,prosystem,puae2021,race,snes9x,stella2014,vice_x64,vice_x128,vice_xpet,vice_xplus4,vice_xvic
+  CORES: a5200,bluemsx,cap32,dosbox,fbneo,fceumm,gambatte,gearcoleco,genesis_plus_gx,gpsp,handy,mednafen_pce_fast,mednafen_saturn,mednafen_supafaust,mednafen_supergrafx,mednafen_vb,mgba,nestopia,pcsx_rearmed,pokemini,prboom,prosystem,puae2021,race,snes9x,stella2014,vice_x64,vice_x128,vice_xpet,vice_xplus4,vice_xvic
 tasks:
 
   clean:
@@ -72,8 +72,10 @@ tasks:
       - rm -rf build/RetroArch/cores/lib/ || true
       - cp -R build/RetroArch/* build/RetroArch.pak/
       - mkdir -p build/RetroArch.pak/assets/cores/info
+      - mkdir -p build/RetroArch.pak/bin
       - find build/RetroArch.pak/cores -name "*.info" -exec mv {} build/RetroArch.pak/assets/cores/info/ \;
       - rm -rf build/RetroArch.pak/cores/info 2>/dev/null || true
+      - curl -o build/RetroArch.pak/bin/minui-power-control https://github.com/ben16w/minui-power-control/releases/download/2.0.1/minui-power-control
       - cp scripts/launch.sh pak.json build/RetroArch.pak/
       - cp configs/retroarch-base.cfg build/RetroArch.pak/retroarch.cfg
 
