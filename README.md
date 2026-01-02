@@ -76,6 +76,7 @@ The system currently builds support for the following platforms. Each is a separ
 
 - **Genesis / Mega Drive / Game Gear** (genesis_plus_gx)
 - **Master System** (bluemsx)
+- **Saturn** (mednafen_saturn)
 
 ### Sony
 
