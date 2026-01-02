@@ -19,15 +19,15 @@ tasks:
   build-base:
     desc: Build the base image with SDL2 preinstalled
     cmds:
-      - docker build -f Dockerfiles/base.Dockerfile -t retroarch-base:latest .
+      - docker build --platform linux/arm64 -f Dockerfiles/base.Dockerfile -t retroarch-base:latest .
 
   build-retroarch:
     desc: Build RetroArch executable
     deps: [ build-base ]
     cmds:
-      - docker build -f Dockerfiles/retroarch.Dockerfile -t retroarch-tg5040:latest .
+      - docker build --platform linux/arm64 -f Dockerfiles/retroarch.Dockerfile -t retroarch-tg5040:latest .
       - mkdir -p build/RetroArch/lib
-      - docker create --name retroarch-temp retroarch-tg5040:latest
+      - docker create --platform linux/arm64 --name retroarch-temp retroarch-tg5040:latest
       - docker cp retroarch-temp:/home/builder/out/retroarch build/RetroArch/ 2>/dev/null || true
       - docker cp retroarch-temp:/home/builder/out/lib/libxkbcommon.so.0 build/RetroArch/lib/ 2>/dev/null || true
       - docker rm retroarch-temp
@@ -38,8 +38,8 @@ tasks:
     requires:
       vars: [ CORE ]
     cmds:
-      - docker build -f Dockerfiles/cores/{{.CORE}}.Dockerfile -t retroarch-core-{{.CORE}}:latest .
-      - docker create --name core-temp-{{.CORE}} retroarch-core-{{.CORE}}:latest
+      - docker build --platform linux/arm64 -f Dockerfiles/cores/{{.CORE}}.Dockerfile -t retroarch-core-{{.CORE}}:latest .
+      - docker create --platform linux/arm64 --name core-temp-{{.CORE}} retroarch-core-{{.CORE}}:latest
       - mkdir -p build/RetroArch/cores/info build/RetroArch/lib
       - docker cp core-temp-{{.CORE}}:/home/builder/out/. build/RetroArch/cores/ 2>/dev/null || true
       - docker rm core-temp-{{.CORE}}
