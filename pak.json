@@ -3,7 +3,7 @@
   "version": "v1.0.0",
   "type": "TOOL",
   "description": "A clean, reproducible RetroArch build with known provenance.",
-  "author": "K-Wall",
+  "author": "Brandon T. Kowalski",
   "repo_url": "https://github.com/UncleJunVIP/retroarch-tg5040",
   "release_filename": "RetroArch.pak.zip",
   "changelog": {
